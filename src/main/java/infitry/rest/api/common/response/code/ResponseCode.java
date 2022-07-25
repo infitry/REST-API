@@ -1,4 +1,4 @@
-package infitry.rest.api.common.response;
+package infitry.rest.api.common.response.code;
 
 public enum ResponseCode {
     OK(200),

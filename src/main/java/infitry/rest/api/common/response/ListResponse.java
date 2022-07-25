@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ListRes<T> extends CommonRes {
+public class ListResponse<T> extends CommonResponse {
     List<T> data;
 }

@@ -1,5 +1,6 @@
 package infitry.rest.api.common.response;
 
+import infitry.rest.api.common.response.code.ResponseCode;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,7 +10,7 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommonRes {
+public class CommonResponse {
     String message;
     ResponseCode responseCode;
 }

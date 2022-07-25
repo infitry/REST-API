@@ -8,6 +8,6 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SingleRes<T> extends CommonRes {
+public class SingleResponse<T> extends CommonResponse {
     T data;
 }
