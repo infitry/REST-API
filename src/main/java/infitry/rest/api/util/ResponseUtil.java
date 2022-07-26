@@ -1,8 +1,13 @@
 package infitry.rest.api.util;
 
 import infitry.rest.api.common.response.CommonResponse;
+import infitry.rest.api.common.response.ListResponse;
+import infitry.rest.api.common.response.SingleResponse;
 import infitry.rest.api.common.response.code.ResponseCode;
+import infitry.rest.api.exception.ServiceException;
 import lombok.experimental.UtilityClass;
+
+import java.util.List;
 
 @UtilityClass
 public class ResponseUtil {
@@ -20,5 +25,33 @@ public class ResponseUtil {
                 .message(DEFAULT_FAIL_MESSAGE)
                 .responseCode(ResponseCode.SERVER_ERROR)
                 .build();
+    }
+    public CommonResponse failResponse(String message) {
+        return CommonResponse.builder()
+                .message(message)
+                .responseCode(ResponseCode.SERVER_ERROR)
+                .build();
+    }
+    public CommonResponse failResponse(ServiceException se) {
+        return CommonResponse.builder()
+                .message(se.getMessage())
+                .responseCode(ResponseCode.SERVER_ERROR)
+                .build();
+    }
+    public static <T> SingleResponse<T> getSingleResult(T data) {
+        SingleResponse<T> result = new SingleResponse<>();
+        result.setData(data);
+        setDefaultSuccess(result);
+        return result;
+    }
+    public static <T> ListResponse<T> getListResult(List<T> list) {
+        ListResponse<T> result = new ListResponse<>();
+        result.setData(list);
+        setDefaultSuccess(result);
+        return result;
+    }
+    private static <T> void setDefaultSuccess(CommonResponse commonResponse) {
+        commonResponse.setMessage(DEFAULT_SUCCESS_MESSAGE);
+        commonResponse.setResponseCode(ResponseCode.OK);
     }
 }
