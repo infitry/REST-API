@@ -11,11 +11,11 @@ public class RestControllerException {
 
     @ExceptionHandler(ServiceException.class)
     protected CommonResponse handleException(ServiceException se) {
-        return ResponseUtil.failResponse();
+        return ResponseUtil.failResponse(se);
     }
 
     @ExceptionHandler(Exception.class)
     protected CommonResponse handleException(Exception e) {
-        return ResponseUtil.failResponse();
+        return ResponseUtil.failResponse(e.getMessage());
     }
 }
