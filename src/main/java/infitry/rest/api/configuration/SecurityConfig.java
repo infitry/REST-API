@@ -2,8 +2,8 @@ package infitry.rest.api.configuration;
 
 import infitry.rest.api.security.CustomAccessDeniedHander;
 import infitry.rest.api.security.CustomAuthenticationEntryPoint;
-import infitry.rest.api.security.jwt.JWTFilter;
-import infitry.rest.api.security.jwt.TokenProvider;
+import infitry.rest.api.security.token.TokenFilter;
+import infitry.rest.api.security.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -50,7 +50,7 @@ public class SecurityConfig {
                     .authorizeRequests()
                     .antMatchers("/api/v1/authentication").permitAll()
                 .and()
-                    .addFilterBefore(new JWTFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                    .addFilterBefore(new TokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
