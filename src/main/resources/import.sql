@@ -1,0 +1,1 @@
+insert into tb_user(AUTHORITY, ID, NAME, PASSWORD, UPDATE_AT, CREATE_AT) values ('ROLE_USER', 'member', '회원1', '$2a$10$YfUT/U7Qdcbkpdr2y6o5ZegUFHfw6liVFQjMYfX79KckHNfFlCFfa', NOW(), NOW());

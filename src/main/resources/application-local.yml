@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    defer-datasource-initialization: true
+  datasource:
+    url: jdbc:h2:~/api
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  redis:
+    host: localhost
+    port: 6379
+  h2:
+    console:
+      enabled: true
+      path: /h2-console

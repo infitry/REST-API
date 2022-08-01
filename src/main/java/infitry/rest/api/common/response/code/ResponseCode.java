@@ -1,5 +1,6 @@
 package infitry.rest.api.common.response.code;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 
@@ -7,9 +8,12 @@ import lombok.experimental.FieldDefaults;
 public enum ResponseCode {
     OK(200),
     SERVER_ERROR(500),
-    FORBIDDEN(403);
+    UNAUTHORIZED(401),
+    UNPROCESSABLE_ENTITY(422);
 
-    int statusCode;
+    @JsonValue
+    public final int statusCode;
+
     ResponseCode(int statusCode) {
         this.statusCode = statusCode;
     }

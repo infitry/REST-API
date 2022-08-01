@@ -32,10 +32,16 @@ public class ResponseUtil {
                 .responseCode(ResponseCode.SERVER_ERROR)
                 .build();
     }
+    public CommonResponse failResponse(String message, ResponseCode responseCode) {
+        return CommonResponse.builder()
+                .message(message)
+                .responseCode(responseCode)
+                .build();
+    }
     public CommonResponse failResponse(ServiceException se) {
         return CommonResponse.builder()
                 .message(se.getMessage())
-                .responseCode(ResponseCode.SERVER_ERROR)
+                .responseCode(se.getResponseCode())
                 .build();
     }
     public static <T> SingleResponse<T> getSingleResult(T data) {
@@ -50,7 +56,7 @@ public class ResponseUtil {
         setDefaultSuccess(result);
         return result;
     }
-    private static <T> void setDefaultSuccess(CommonResponse commonResponse) {
+    private static void setDefaultSuccess(CommonResponse commonResponse) {
         commonResponse.setMessage(DEFAULT_SUCCESS_MESSAGE);
         commonResponse.setResponseCode(ResponseCode.OK);
     }
