@@ -1,0 +1,37 @@
+server:
+  port: 8080
+  error:
+    include-exception: false
+    include-stacktrace: NEVER
+    whitelabel:
+      enabled: false
+    path: /error
+    tomcat:
+      threads:
+        max: 200
+        min-spare: 200
+      connection-timeout: 3000
+
+spring:
+  application:
+    name: api
+  web:
+    locale: ko_KR
+  messages:
+    basename: messages/messages
+    encoding: UTF-8
+  jpa:
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+application:
+  timezone: Asia/Seoul
+  locale: ko
+
+spring-doc:
+  api-docs:
+    enabled: false
