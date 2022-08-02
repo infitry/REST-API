@@ -40,6 +40,17 @@ public class User extends BaseTimeEntity implements UserDetails {
         return List.of(new SimpleGrantedAuthority(this.authority.name()));
     }
 
+    private User(Authority authority, String id, String name, String password) {
+        this.authority = Authority.ROLE_USER;
+        this.id = id;
+        this.name = name;
+        this.password = password;
+    }
+
+    public static User createUser(Authority authority, String id, String name, String password) {
+        return new User(authority, id, name, password);
+    }
+
     @Override
     public String getUsername() {
         return this.id;
