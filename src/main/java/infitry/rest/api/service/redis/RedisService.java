@@ -35,7 +35,8 @@ public class RedisService {
     }
 
     public Boolean removeValues(List<String> keys) {
-        return (0 == template.delete(keys)) ? false : true;
+        Long result = template.delete(keys);
+        return result != null && result > 0;
     }
 }
 
