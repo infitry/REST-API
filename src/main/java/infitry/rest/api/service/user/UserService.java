@@ -6,7 +6,6 @@ import infitry.rest.api.dto.token.TokenDto;
 import infitry.rest.api.exception.ServiceException;
 import infitry.rest.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -24,7 +23,6 @@ public class UserService implements UserDetailsService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
-    private final ModelMapper modelMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
