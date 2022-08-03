@@ -41,7 +41,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     }
 
     private User(Authority authority, String id, String name, String password) {
-        this.authority = Authority.ROLE_USER;
+        this.authority = authority;
         this.id = id;
         this.name = name;
         this.password = password;
