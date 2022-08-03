@@ -12,7 +12,7 @@ public enum ResponseCode {
     UNPROCESSABLE_ENTITY(422);
 
     @JsonValue
-    public final int statusCode;
+    final int statusCode;
 
     ResponseCode(int statusCode) {
         this.statusCode = statusCode;
