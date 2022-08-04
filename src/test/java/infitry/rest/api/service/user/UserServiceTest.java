@@ -24,6 +24,7 @@ class UserServiceTest {
     PasswordEncoder passwordEncoder;
 
     @Test
+    @Transactional
     public void 사용자_조회() {
         //given
         final String username = "test1";
