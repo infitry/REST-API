@@ -25,9 +25,8 @@ class UserServiceTest {
 
     @Test
     public void 사용자_조회() {
-        final String username = "test1";
-
         //given
+        final String username = "test1";
         User user = User.createUser(Authority.ROLE_USER, username, "name1", passwordEncoder.encode("password1"));
         //when
         userRepository.save(user);
