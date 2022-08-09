@@ -1,8 +1,9 @@
 package infitry.rest.api.configuration.security.token;
 
 import infitry.rest.api.dto.token.TokenDto;
+import infitry.rest.api.repository.domain.user.Authority;
 import infitry.rest.api.repository.domain.user.User;
-import infitry.rest.api.repository.domain.user.code.Authority;
+import infitry.rest.api.repository.domain.user.code.Role;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ class TokenProviderTest {
     void 사용자_생성() {
         // given
         String encodedPassword = passwordEncoder.encode("password");
-        Authority authority = Authority.ROLE_USER;
-        User user = User.createUser(authority, "user1", "회원1", encodedPassword);
-        authentication = new UsernamePasswordAuthenticationToken(user, encodedPassword, List.of(new SimpleGrantedAuthority(authority.name())));
+        Authority authority = Authority.createAuthority(Role.ROLE_ADMIN, "어드민 기능 허용");
+        User user = User.createUser(List.of(authority), "user1", "회원1", encodedPassword);
+        authentication = new UsernamePasswordAuthenticationToken(user, encodedPassword, List.of(new SimpleGrantedAuthority(authority.getRole().name())));
     }
 
     @Test

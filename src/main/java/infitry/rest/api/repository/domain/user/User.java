@@ -1,7 +1,6 @@
 package infitry.rest.api.repository.domain.user;
 
 import infitry.rest.api.repository.domain.common.BaseTimeEntity;
-import infitry.rest.api.repository.domain.user.code.Authority;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +10,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Entity(name = "tb_user")
@@ -23,8 +24,8 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long userId;
 
-    @Enumerated(EnumType.STRING)
-    Authority authority;
+    @OneToMany
+    List<Authority> authorities = new ArrayList<>();
 
     @Column(columnDefinition = "varchar(50)")
     String id;
@@ -37,18 +38,18 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.authority.name()));
+        return this.authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getRole().name())).collect(Collectors.toList());
     }
 
-    private User(Authority authority, String id, String name, String password) {
-        this.authority = authority;
+    private User(List<Authority> authorities, String id, String name, String password) {
+        this.authorities = authorities;
         this.id = id;
         this.name = name;
         this.password = password;
     }
 
-    public static User createUser(Authority authority, String id, String name, String password) {
-        return new User(authority, id, name, password);
+    public static User createUser(List<Authority> authorities, String id, String name, String password) {
+        return new User(authorities, id, name, password);
     }
 
     @Override
