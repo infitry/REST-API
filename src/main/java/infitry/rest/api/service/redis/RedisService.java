@@ -16,7 +16,7 @@ public class RedisService {
     private final ObjectMapper objectMapper;
     private final RedisTemplate<String, Object> template;
 
-    public synchronized <T> T getValue(final String key, Class<T> clazz) {
+    public <T> T getValue(final String key, Class<T> clazz) {
         template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Object.class));
         return objectMapper.registerModule(new JavaTimeModule()).convertValue(template.opsForValue().get(key), clazz);
