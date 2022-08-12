@@ -1,5 +1,7 @@
 package infitry.rest.api.configuration.redis;
 
+import infitry.rest.api.common.properties.RedisProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,21 +15,18 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Slf4j
+@RequiredArgsConstructor
 @Configuration
 @EnableRedisRepositories
 public class RedisConfig {
 
-    @Value("${spring.redis.host}")
-    private String redisHost;
-
-    @Value("${spring.redis.port}")
-    private int redisPort;
+    private final RedisProperties redisProperties;
 
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-        redisConfig.setHostName(redisHost);
-        redisConfig.setPort(redisPort);
+        redisConfig.setHostName(redisProperties.getHost());
+        redisConfig.setPort(redisProperties.getPort());
 
         return new LettuceConnectionFactory(redisConfig);
     }
