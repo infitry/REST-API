@@ -44,9 +44,10 @@ public class SecurityConfig {
                 .headers().frameOptions().sameOrigin()
             .and()
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
-                .antMatchers("/v1/user/authentication").permitAll()
-                .antMatchers("/v1/user/token").permitAll()
+                .antMatchers("/").anonymous()
+                .antMatchers("/v1/user/authentication").anonymous()
+                .antMatchers("/v1/user/token").anonymous()
+                .antMatchers("/v1/user/new").anonymous()
                 .anyRequest().authenticated()
             .and()
                 .addFilterBefore(new TokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
