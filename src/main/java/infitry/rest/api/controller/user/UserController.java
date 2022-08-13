@@ -1,6 +1,10 @@
 package infitry.rest.api.controller.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import infitry.rest.api.common.response.CommonResponse;
+import infitry.rest.api.dto.user.AddressDto;
+import infitry.rest.api.dto.user.UserDto;
+import infitry.rest.api.dto.user.SignUpRequest;
 import infitry.rest.api.dto.authentication.AuthenticationRequest;
 import infitry.rest.api.dto.authentication.AuthenticationResponse;
 import infitry.rest.api.dto.token.RefreshTokenRequest;
@@ -25,6 +29,16 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final ObjectMapper objectMapper;
+
+    @PostMapping(value = "/new")
+    @Operation(summary = "회원 가입", description = "회원가입 처리")
+    public CommonResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
+        UserDto userDto = objectMapper.convertValue(signUpRequest, UserDto.class);
+        userDto.setAddressDto(objectMapper.convertValue(signUpRequest, AddressDto.class));
+        userService.signUp(userDto);
+        return ResponseUtil.successResponse();
+    }
 
     @PostMapping(value = "/authentication")
     @Operation(summary = "회원 인증", description = "로그인 및 엑세스 토큰발급")

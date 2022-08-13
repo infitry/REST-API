@@ -3,9 +3,11 @@ package infitry.rest.api.service.user;
 import infitry.rest.api.common.response.code.ResponseCode;
 import infitry.rest.api.configuration.security.token.TokenProvider;
 import infitry.rest.api.dto.token.TokenDto;
+import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.exception.ServiceException;
 import infitry.rest.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
+@Slf4j
 public class UserService implements UserDetailsService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -42,5 +45,9 @@ public class UserService implements UserDetailsService {
             throw new ServiceException("로그인이 만료 되었습니다.", ResponseCode.UNAUTHORIZED);
         }
         return tokenProvider.reissueAccessToken(refreshToken);
+    }
+
+    public void signUp(UserDto userDto) {
+        log.info("userDto : {}", userDto);
     }
 }
