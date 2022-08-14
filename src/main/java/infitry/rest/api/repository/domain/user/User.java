@@ -1,6 +1,8 @@
 package infitry.rest.api.repository.domain.user;
 
+import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.repository.domain.common.BaseTimeEntity;
+import infitry.rest.api.repository.domain.embedded.Address;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,20 +38,32 @@ public class User extends BaseTimeEntity implements UserDetails {
     @Column(columnDefinition = "varchar(100)")
     String password;
 
+    @Column(columnDefinition = "varchar(100)")
+    String phoneNumber;
+
+    @Column(columnDefinition = "varchar(100)")
+    String email;
+
+    @Embedded
+    Address address;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities.stream().map(authority -> new SimpleGrantedAuthority(authority.getRole().name())).collect(Collectors.toList());
     }
 
-    private User(List<Authority> authorities, String id, String name, String password) {
+    private User(List<Authority> authorities, UserDto userDto) {
         this.authorities = authorities;
-        this.id = id;
-        this.name = name;
-        this.password = password;
+        this.id = userDto.getId();
+        this.name = userDto.getName();
+        this.password = userDto.getPassword();
+        this.phoneNumber = userDto.getPhoneNumber();
+        this.email = userDto.getEmail();
+        this.address = Address.createAddress(userDto.getAddressDto());
     }
 
-    public static User createUser(List<Authority> authorities, String id, String name, String password) {
-        return new User(authorities, id, name, password);
+    public static User createUser(List<Authority> authorities, UserDto userDto) {
+        return new User(authorities, userDto);
     }
 
     @Override

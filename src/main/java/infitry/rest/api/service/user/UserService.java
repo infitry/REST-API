@@ -1,11 +1,15 @@
 package infitry.rest.api.service.user;
 
+import infitry.rest.api.common.constant.UserConstant;
 import infitry.rest.api.common.response.code.ResponseCode;
 import infitry.rest.api.configuration.security.token.TokenProvider;
 import infitry.rest.api.dto.token.TokenDto;
 import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.exception.ServiceException;
+import infitry.rest.api.repository.AuthorityRepository;
 import infitry.rest.api.repository.UserRepository;
+import infitry.rest.api.repository.domain.user.Authority;
+import infitry.rest.api.repository.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -25,6 +31,7 @@ public class UserService implements UserDetailsService {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final UserRepository userRepository;
+    private final AuthorityRepository authorityRepository;
     private final TokenProvider tokenProvider;
 
     @Override
@@ -48,6 +55,8 @@ public class UserService implements UserDetailsService {
     }
 
     public void signUp(UserDto userDto) {
-        log.info("userDto : {}", userDto);
+        log.debug("userDto : {}", userDto);
+        Authority authority = authorityRepository.findById(UserConstant.ROLE_USER_ID).orElseThrow(() -> new ServiceException("권한이 존재하지 않습니다."));
+        User saveUser = User.createUser(List.of(authority), userDto);
     }
 }
