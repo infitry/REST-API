@@ -1,5 +1,7 @@
 package infitry.rest.api.service.user;
 
+import infitry.rest.api.dto.user.AddressDto;
+import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.repository.UserRepository;
 import infitry.rest.api.repository.domain.user.Authority;
 import infitry.rest.api.repository.domain.user.User;
@@ -30,13 +32,16 @@ class UserServiceTest {
     @Transactional
     public void 사용자_조회() {
         //given
-        final String username = "test1";
+        final String id = "test1";
+        final String name = "회원1";
+        final String encodedPassword = passwordEncoder.encode("password");
         Authority authority = Authority.createAuthority(Role.ROLE_ADMIN, "어드민 기능 허용");
-        User user = User.createUser(List.of(authority), username, "name1", passwordEncoder.encode("password1"));
+        AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
+        User user = User.createUser(List.of(authority), UserDto.builder().id(id).name(name).password(encodedPassword).addressDto(addressDto).build());
         //when
         userRepository.save(user);
-        UserDetails user2 = userService.loadUserByUsername(username);
+        UserDetails user2 = userService.loadUserByUsername(id);
         //then
-        assertEquals(username, user2.getUsername());
+        assertEquals(id, user2.getUsername());
     }
 }

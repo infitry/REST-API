@@ -1,6 +1,8 @@
 package infitry.rest.api.configuration.security.token;
 
 import infitry.rest.api.dto.token.TokenDto;
+import infitry.rest.api.dto.user.AddressDto;
+import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.repository.domain.user.Authority;
 import infitry.rest.api.repository.domain.user.User;
 import infitry.rest.api.repository.domain.user.code.Role;
@@ -30,9 +32,10 @@ class TokenProviderTest {
     @BeforeEach
     void 사용자_생성() {
         // given
-        String encodedPassword = passwordEncoder.encode("password");
+        final String encodedPassword = passwordEncoder.encode("password");
         Authority authority = Authority.createAuthority(Role.ROLE_ADMIN, "어드민 기능 허용");
-        User user = User.createUser(List.of(authority), "user1", "회원1", encodedPassword);
+        AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
+        User user = User.createUser(List.of(authority), UserDto.builder().id("user1").name("회원1").password(encodedPassword).addressDto(addressDto).build());
         authentication = new UsernamePasswordAuthenticationToken(user, encodedPassword, List.of(new SimpleGrantedAuthority(authority.getRole().name())));
     }
 
