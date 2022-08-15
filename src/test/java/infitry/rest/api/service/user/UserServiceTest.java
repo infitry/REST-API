@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,5 +44,21 @@ class UserServiceTest {
         UserDetails user2 = userService.loadUserByUsername(id);
         //then
         assertEquals(id, user2.getUsername());
+    }
+
+    @Test
+    @Transactional
+    public void 사용자_저장() {
+        // given
+        final String id = "test1";
+        final String name = "회원1";
+        final String encodedPassword = passwordEncoder.encode("password");
+        AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
+        // when
+        userService.signUp(UserDto.builder().id(id).name(name).password(encodedPassword).addressDto(addressDto).build());
+        User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        // then
+        assertEquals(id, user.getId());
+        assertEquals(name, user.getName());
     }
 }
