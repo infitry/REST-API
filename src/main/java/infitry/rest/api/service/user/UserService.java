@@ -18,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +34,7 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -54,9 +56,18 @@ public class UserService implements UserDetailsService {
         return tokenProvider.reissueAccessToken(refreshToken);
     }
 
+    @Transactional
     public void signUp(UserDto userDto) {
         log.debug("userDto : {}", userDto);
-        Authority authority = authorityRepository.findById(UserConstant.ROLE_USER_ID).orElseThrow(() -> new ServiceException("권한이 존재하지 않습니다."));
-        User saveUser = User.createUser(List.of(authority), userDto);
+        encryptPassword(userDto);
+        userRepository.save(User.createUser(List.of(getDefaultUserAuthority()), userDto));
+    }
+
+    private void encryptPassword(UserDto userDto) {
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+    }
+
+    private Authority getDefaultUserAuthority() {
+        return authorityRepository.findById(UserConstant.ROLE_USER_ID).orElseThrow(() -> new ServiceException("권한이 존재하지 않습니다."));
     }
 }
