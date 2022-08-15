@@ -26,7 +26,7 @@ public class User extends BaseTimeEntity implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long userId;
 
-    @OneToMany
+    @ManyToMany
     List<Authority> authorities = new ArrayList<>();
 
     @Column(columnDefinition = "varchar(50)")
