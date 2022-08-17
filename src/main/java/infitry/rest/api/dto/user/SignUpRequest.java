@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Schema(name = "SignUpRequest", description = "회원가입 요청")
 @Setter
@@ -32,6 +33,7 @@ public class SignUpRequest {
     @Schema(name = "name", description = "이름", type = "String", example = " ")
     String name;
 
+    @Pattern(message = "휴대전화번호를 정확히 입력해 주세요.", regexp = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$")
     @NotBlank(message = "휴대전화번호를 입력해 주세요.")
     @Schema(name = "phoneNumber", description = "휴대전화번호", type = "String", example = " ")
     String phoneNumber;
