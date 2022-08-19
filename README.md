@@ -9,4 +9,4 @@
     TDD 리팩토링 연습
     도메인 모델 패턴 연습
     JPA 다양한 문제 다뤄보기
-    RESTful API 템플릿 만들기
+    RESTful API 만들기
