@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/v1/user/authentication").anonymous()
                 .antMatchers("/v1/user/token").anonymous()
                 .antMatchers("/v1/user/new").anonymous()
+                .antMatchers("/v1/sample/excel/**").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .addFilterBefore(new TokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
@@ -56,6 +57,6 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/sample/excel/**");
+        return web -> web.ignoring().antMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**");
     }
 }
