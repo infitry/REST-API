@@ -9,7 +9,7 @@ public class SampleExcel extends ExcelProvider {
 
     @Override
     protected void createRow(SXSSFWorkbook workbook) {
-        workbook.setCompressTempFiles(true);
+        // 시트 생성
         Sheet sheet = workbook.createSheet("sheet1");
 
         // 헤더 생성

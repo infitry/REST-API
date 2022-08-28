@@ -19,6 +19,6 @@ public class SampleExcelController {
     @GetMapping("/download")
     public void excelDownload(HttpServletResponse response) throws IOException {
         SampleExcel sampleExcel = new SampleExcel();
-        sampleExcel.excelDownload(response);
+        sampleExcel.excelDownload(response, "sample.xlsx");
     }
 }

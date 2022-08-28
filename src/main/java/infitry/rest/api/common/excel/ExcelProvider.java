@@ -11,15 +11,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 public abstract class ExcelProvider {
 
-    public void excelDownload(HttpServletResponse response) throws IOException {
-        response.setHeader("Content-Disposition", "attachment;filename=test.xlsx");
-        response.setContentType("application/octet-stream");
+    private static final String FILE_EXTENSION = ".xlsx";
+    private static final String FILE_CONTENT_TYPE = "application/octet-stream";
+
+    public void excelDownload(HttpServletResponse response, final String fileName) throws IOException {
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + FILE_EXTENSION);
+        response.setContentType(FILE_CONTENT_TYPE);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
+            workbook.setCompressTempFiles(true);
             createRow(workbook);
             workbook.write(outputStream);
         } catch (IOException e) {
-            throw new ServiceException("엑셀 파일 생성 중 에러가 발생하였습니다.");
+            throw new RuntimeException("엑셀 파일 생성 중 에러가 발생하였습니다.");
         }
         IOUtils.copy(new ByteArrayInputStream(outputStream.toByteArray()), response.getOutputStream());
     }
