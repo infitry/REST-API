@@ -14,7 +14,7 @@ public abstract class ExcelProvider {
     private static final String FILE_EXTENSION = ".xlsx";
     private static final String FILE_CONTENT_TYPE = "application/octet-stream";
 
-    public void excelDownload(HttpServletResponse response, final String fileName) throws IOException {
+    public void excelDownload(HttpServletResponse response, final String fileName) {
         response.setHeader("Content-Disposition", "attachment;filename=" + fileName + FILE_EXTENSION);
         response.setContentType(FILE_CONTENT_TYPE);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -22,10 +22,10 @@ public abstract class ExcelProvider {
             workbook.setCompressTempFiles(true);
             createRow(workbook);
             workbook.write(outputStream);
+            IOUtils.copy(new ByteArrayInputStream(outputStream.toByteArray()), response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException("엑셀 파일 생성 중 에러가 발생하였습니다.");
         }
-        IOUtils.copy(new ByteArrayInputStream(outputStream.toByteArray()), response.getOutputStream());
     }
     protected abstract void createRow(SXSSFWorkbook workbook);
 }
