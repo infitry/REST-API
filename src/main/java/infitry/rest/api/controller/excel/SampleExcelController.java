@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Tag(name = "ExcelController", description = "샘플 엑셀 컨트롤러")
 @RestController
@@ -19,7 +18,7 @@ public class SampleExcelController {
     private final SampleExcelProvider  sampleExcelProvider;
     @Operation(summary = "엑셀 다운로드 샘플", description = "엑셀 다운로드 샘플 API")
     @GetMapping("/download")
-    public void excelDownload(HttpServletResponse response) throws IOException {
+    public void excelDownload(HttpServletResponse response) {
         sampleExcelProvider.excelDownload(response, "sample");
     }
 }
