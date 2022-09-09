@@ -35,7 +35,7 @@ dependencies {
 	implementation (group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3') {
 		exclude group: 'org.slf4j', module: 'slf4j-simple'
 	}
-	implementation 'org.springdoc:springdoc-openapi-ui:1.6.10'
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 	implementation 'org.modelmapper:modelmapper:3.1.0'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.apache.poi:poi-ooxml:5.2.2'
