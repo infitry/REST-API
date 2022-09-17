@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@Tag(name = "user", description = "사용자 관련 API")
+@Tag(name = "Users", description = "사용자 관련 API")
 @RequestMapping(value = "/v1/users")
 @RequiredArgsConstructor
 @RestController

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-@Tag(name = "ExcelController", description = "샘플 엑셀 컨트롤러")
+@Tag(name = "Excel", description = "샘플 엑셀 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/sample/excel")
