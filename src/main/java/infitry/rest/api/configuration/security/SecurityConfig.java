@@ -47,7 +47,7 @@ public class SecurityConfig {
                 .antMatchers("/").anonymous()
                 .antMatchers("/v1/users/authentication").anonymous()
                 .antMatchers("/v1/users/token").anonymous()
-                .antMatchers("/v1/users/new").anonymous()
+                .antMatchers("/v1/users").anonymous()
                 .antMatchers("/v1/sample/excel/**").permitAll()
                 .anyRequest().authenticated()
             .and()
