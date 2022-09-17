@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @Tag(name = "user", description = "사용자 관련 API")
-@RequestMapping(value = "/v1/user")
+@RequestMapping(value = "/v1/users")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -31,7 +31,7 @@ public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "/new")
+    @PostMapping
     @Operation(summary = "회원 가입", description = "회원가입 처리")
     public CommonResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         UserDto userDto = objectMapper.convertValue(signUpRequest, UserDto.class);
