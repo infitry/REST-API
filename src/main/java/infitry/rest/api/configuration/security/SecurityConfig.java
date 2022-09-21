@@ -1,5 +1,6 @@
 package infitry.rest.api.configuration.security;
 
+import infitry.rest.api.configuration.security.constant.SecurityRole;
 import infitry.rest.api.configuration.security.token.TokenFilter;
 import infitry.rest.api.configuration.security.token.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -44,11 +45,11 @@ public class SecurityConfig {
                 .headers().frameOptions().sameOrigin()
             .and()
                 .authorizeRequests()
-                .antMatchers("/").anonymous()
-                .antMatchers("/v1/users/authentication").anonymous()
-                .antMatchers("/v1/users/token").anonymous()
-                .antMatchers("/v1/users").anonymous()
-                .antMatchers("/v1/sample/excel/**").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/sample/excel/**").permitAll()
+                .antMatchers("/users/**").anonymous()
+                .antMatchers("/items/**").hasRole(SecurityRole.ROLE_ADMIN)
+                .antMatchers("/orders/**").hasRole(SecurityRole.ROLE_USER)
                 .anyRequest().authenticated()
             .and()
                 .addFilterBefore(new TokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);

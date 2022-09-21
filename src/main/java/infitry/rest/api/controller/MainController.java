@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "main", description = "기본 컨트롤러")
+@Tag(name = "Main API", description = "기본 컨트롤러")
 @RestController
 public class MainController {
     @GetMapping("/")
