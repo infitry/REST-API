@@ -1,12 +1,25 @@
-# 프로젝트 버전 정보
+# 프로젝트 정보
     Spring Boot 2.7.1
+    Spring Security
     java 11
     JPA
-    MariaDB 10.8.3
-    
+    H2
+    Redis
+    Swagger
+    JUnit5
+--------------------------
 # 프로젝트 설명
-    1일 1커밋 생활화
-    TDD 리팩토링 연습
-    도메인 모델 패턴 연습
-    JPA 다양한 문제 다뤄보기
-    RESTful API 만들기
+    common : 공통 상수, 프로퍼티, 응답 패키지ㅇ
+    configuration : Spring Configuration 패키지
+    controller : Spring Controller 패키지
+    dto : dto, request 패키지
+    exception : 예외 관련 패키지
+    repository : JPA repository 및 domain 패키지
+    service : Spring Service 패키지
+    util : 공통 util 패키지
+--------------------------
+# h2-console 경로
+    /h2-console/
+--------------------------
+# Swagger UI 경로
+    /swagger-ui/index.html
