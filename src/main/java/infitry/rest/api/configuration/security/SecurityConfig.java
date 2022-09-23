@@ -45,10 +45,9 @@ public class SecurityConfig {
             .and()
                 .authorizeRequests()
                 .antMatchers("/").anonymous()
-                .antMatchers("/v1/users/authentication").anonymous()
-                .antMatchers("/v1/users/token").anonymous()
-                .antMatchers("/v1/users").anonymous()
-                .antMatchers("/v1/sample/excel/**").permitAll()
+                .antMatchers("/users/**").anonymous()
+                .antMatchers("/files/**").anonymous()
+                .antMatchers("/sample/excel/**").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .addFilterBefore(new TokenFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);

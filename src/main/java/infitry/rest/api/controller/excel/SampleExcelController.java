@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 @Tag(name = "Excel", description = "샘플 엑셀 컨트롤러")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/sample/excel")
+@RequestMapping("/sample/excel")
 public class SampleExcelController {
     private final SampleExcelProvider  sampleExcelProvider;
     @Operation(summary = "엑셀 다운로드 샘플", description = "엑셀 다운로드 샘플 API")
