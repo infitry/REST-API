@@ -32,7 +32,7 @@ class FileRepositoryTest {
                 .filePath(filePath)
                 .fileName(fileName)
                 .extension(extension)
-                .saveFileName(savedFileName)
+                .savedFileName(savedFileName)
                 .fileSize(fileSize)
             .build());
         // when

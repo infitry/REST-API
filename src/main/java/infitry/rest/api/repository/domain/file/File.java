@@ -35,7 +35,7 @@ public class File {
     private File(FileDto fileDto) {
         this.filePath = fileDto.getFilePath();
         this.fileName = fileDto.getFileName();
-        this.savedFileName = fileDto.getSaveFileName();
+        this.savedFileName = fileDto.getSavedFileName();
         this.extension = fileDto.getExtension();
         this.fileSize = fileDto.getFileSize();
     }
