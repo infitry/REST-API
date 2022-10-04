@@ -1,73 +1,84 @@
 package infitry.rest.api.service.file;
 
+import infitry.rest.api.common.constant.FileConstant;
 import infitry.rest.api.dto.file.FileDto;
 import infitry.rest.api.exception.ServiceException;
 import infitry.rest.api.repository.FileRepository;
 import infitry.rest.api.repository.domain.file.File;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class FileService {
     private final FileRepository fileRepository;
     private final ModelMapper modelMapper;
-    private final static String FILE_SAVE_PATH = "~/download/";
+    //TODO path 에 대한 고민
+    private final static Path FILE_SAVE_PATH = Path.of("Users", "infitry", "download");
 
     /** 파일 저장하기 */
+    @Transactional
     public List<FileDto> save(List<MultipartFile> multipartFiles) {
-
-        List<File> files = multipartFiles.stream()
-                .map(file -> FileDto.builder()
-                        .filePath(FILE_SAVE_PATH)
-                        .fileName(file.getOriginalFilename())
-                        .savedFileName(UUID.randomUUID().toString())
-                        .extension(FilenameUtils.getExtension(file.getOriginalFilename()))
-                        .fileSize(Long.valueOf(file.getSize()).intValue())
-                    .build())
-                .map(fileDto -> File.createFile(fileDto))
-                .collect(Collectors.toList());
-
-        List<FileDto> saveFiles = fileRepository.saveAll(files).stream()
-                .map(file -> modelMapper.map(file, FileDto.class))
-                .collect(Collectors.toList());
-
-        Path root = Paths.get(FILE_SAVE_PATH);
-        if (!Files.exists(root)) {
-            createUploadDirectories();
+        if (!Files.exists(FILE_SAVE_PATH)) {
+            createDefaultDirectories();
         }
 
-        multipartFiles.forEach(file -> {
-            try {
-                Files.copy(file.getInputStream(), root.resolve(file.getOriginalFilename()),
-                        StandardCopyOption.REPLACE_EXISTING);
-            } catch (IOException e) {
-                throw new ServiceException("Could not upload file (name: " + file.getName() + ")");
-            }
+        List<FileDto> results = new ArrayList<>();
+        for (MultipartFile file : multipartFiles) {
+            String savedFileName = getRandomFileName();
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
-        });
+            File fileEntity = File.createFile(FileDto.builder()
+                    .filePath(FILE_SAVE_PATH.toString())
+                    .fileName(file.getOriginalFilename())
+                    .savedFileName(savedFileName)
+                    .extension(extension)
+                    .fileSize(Long.valueOf(file.getSize()).intValue())
+                .build());
 
-        return saveFiles;
+            File savedFile = fileRepository.save(fileEntity);
+            uploadFile(file, savedFileName + FileConstant.DOT + extension);
+            results.add(modelMapper.map(savedFile, FileDto.class));
+        }
+
+        return results;
     }
 
-    private void createUploadDirectories() {
+    private String getRandomFileName() {
+        return UUID.randomUUID().toString();
+    }
+
+    private void uploadFile(MultipartFile file, String savedFileName) {
         try {
-            Files.createDirectories(Paths.get(FILE_SAVE_PATH));
+            Files.copy(file.getInputStream(), FILE_SAVE_PATH.resolve(savedFileName),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
+            log.info("Upload file fail reason : {}", e);
+            throw new ServiceException("Could not upload file (name: " + file.getName() + ")");
+        }
+    }
+
+    private void createDefaultDirectories() {
+        try {
+            Files.createDirectories(FILE_SAVE_PATH);
+        } catch (IOException e) {
+            log.info("Create default directory fail reason : {}", e);
             throw new ServiceException("Could not create upload Directories!");
         }
     }
-
 }
