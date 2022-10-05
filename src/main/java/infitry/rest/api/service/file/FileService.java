@@ -67,7 +67,7 @@ public class FileService {
             Files.copy(file.getInputStream(), FILE_SAVE_PATH.resolve(savedFileName),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            log.info("Upload file fail reason : {}", e);
+            log.info("Upload file fail reason :", e);
             throw new ServiceException("Could not upload file (name: " + file.getName() + ")");
         }
     }
@@ -76,7 +76,7 @@ public class FileService {
         try {
             Files.createDirectories(FILE_SAVE_PATH);
         } catch (IOException e) {
-            log.info("Create default directory fail reason : {}", e);
+            log.info("Create default directory fail reason : ", e);
             throw new ServiceException("Could not create upload Directories!");
         }
     }
