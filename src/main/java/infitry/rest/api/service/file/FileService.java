@@ -28,8 +28,7 @@ import java.util.UUID;
 public class FileService {
     private final FileRepository fileRepository;
     private final ModelMapper modelMapper;
-    //TODO path 에 대한 고민
-    private final static Path FILE_SAVE_PATH = Path.of("Users", "infitry", "download");
+    private final static Path FILE_SAVE_PATH = Path.of(System.getProperty("user.home"), "download");
 
     /** 파일 저장하기 */
     @Transactional
