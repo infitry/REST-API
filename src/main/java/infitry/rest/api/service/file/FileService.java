@@ -26,6 +26,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -43,8 +44,7 @@ public class FileService {
             createDefaultDirectories();
         }
 
-        List<FileDto> results = new ArrayList<>();
-        for (MultipartFile file : multipartFiles) {
+        return multipartFiles.stream().map(file -> {
             String savedFileName = getRandomFileName();
             String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 
@@ -58,9 +58,8 @@ public class FileService {
 
             File savedFile = fileRepository.save(fileEntity);
             uploadFile(file, savedFileName + FileConstant.DOT + extension);
-            results.add(modelMapper.map(savedFile, FileDto.class));
-        }
-        return results;
+            return modelMapper.map(savedFile, FileDto.class);
+        }).collect(Collectors.toList());
     }
 
     /** 파일 다운로드 */
