@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Schema(name = "FileRequest", description = "파일 업로드")
+@Schema(name = "FileRequest", description = "파일 업로드 요청")
 @Getter
 @Setter
 @Builder
@@ -15,5 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FileUploadRequest {
+
+    @Schema(name = "multipartFiles", description = "업로드 파일들", type = "file", example = " ")
     List<MultipartFile> multipartFiles; // 업로드할 파일들
 }
