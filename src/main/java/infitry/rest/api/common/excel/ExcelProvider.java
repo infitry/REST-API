@@ -2,6 +2,8 @@ package infitry.rest.api.common.excel;
 
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -10,10 +12,10 @@ import java.io.IOException;
 public abstract class ExcelProvider {
 
     private static final String FILE_EXTENSION = ".xlsx";
-    private static final String FILE_CONTENT_TYPE = "application/octet-stream";
+    private static final String FILE_CONTENT_TYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
     public void excelDownload(HttpServletResponse response, final String fileName) {
-        response.setHeader("Content-Disposition", "attachment;filename=" + fileName + FILE_EXTENSION);
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + FILE_EXTENSION);
         response.setContentType(FILE_CONTENT_TYPE);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (SXSSFWorkbook workbook = new SXSSFWorkbook()) {
