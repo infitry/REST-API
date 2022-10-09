@@ -1,5 +1,6 @@
 package infitry.rest.api.common.excel;
 
+import infitry.rest.api.configuration.aop.timer.Timer;
 import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ public abstract class ExcelProvider {
     private static final String FILE_EXTENSION = ".xlsx";
     private static final String FILE_CONTENT_TYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
 
+    @Timer
     public void excelDownload(HttpServletResponse response, final String fileName) {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + FILE_EXTENSION);
         response.setContentType(FILE_CONTENT_TYPE);

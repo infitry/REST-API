@@ -1,6 +1,6 @@
 package infitry.rest.api.controller.excel;
 
-import infitry.rest.api.common.excel.SampleExcelProvider;
+import infitry.rest.api.service.excel.SampleExcelProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 @RequestMapping("/sample/excel")
 public class SampleExcelController {
-    private final SampleExcelProvider  sampleExcelProvider;
+    private final SampleExcelProvider sampleExcelProvider;
     @Operation(summary = "엑셀 다운로드 샘플", description = "엑셀 다운로드 샘플 API")
     @GetMapping("/download")
     public void excelDownload(HttpServletResponse response) {
