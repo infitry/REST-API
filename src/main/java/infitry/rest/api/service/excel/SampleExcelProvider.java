@@ -1,9 +1,7 @@
 package infitry.rest.api.service.excel;
 
 import infitry.rest.api.common.excel.ExcelProvider;
-import infitry.rest.api.configuration.aop.timer.Timer;
 import infitry.rest.api.dto.user.UserDto;
-import infitry.rest.api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -17,28 +15,33 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 public class SampleExcelProvider extends ExcelProvider {
-
-    private final UserRepository userRepository;
     @Override
     protected void createRow(SXSSFWorkbook workbook) {
-        List<UserDto> userList = IntStream.range(0, 10000000).mapToObj(i ->
-            UserDto.builder()
-                .id("아이디" + i)
-                .name("이름" + i)
-                .email("이메일" + i)
-                .build()
-        ).collect(Collectors.toList());
+        // 데이터 불러오기
+        List<UserDto> userList = getExcelData();
+        // 목록 파티션
+        List<List<UserDto>> partitionList = createPartition(userList);
+        // 파티션 목록 마다 sheet 만듬
+        int sheetNum = 0;
+        System.out.println("partitionList size = " + partitionList.size());
+        for (List<UserDto> userDtos : partitionList) {
+            Sheet sheet = workbook.createSheet("sheet" + sheetNum);
+            // 헤더 생성
+            createHeader(sheet);
+            // 내용 생성
+            createRow(userDtos, sheet);
+            sheetNum++;
+        }
+    }
 
-        // 시트 생성
-        Sheet sheet = workbook.createSheet("sheet1");
-
-        // 헤더 생성
+    private void createHeader(Sheet sheet) {
         Row headerRow = sheet.createRow(0);
         headerRow.createCell(0).setCellValue("아이디");
         headerRow.createCell(1).setCellValue("이름");
         headerRow.createCell(2).setCellValue("이메일");
+    }
 
-        // 내용 생성
+    private void createRow(List<UserDto> userList, Sheet sheet) {
         int rowNum = 1;
         for (UserDto user : userList) {
             Row dataRow = sheet.createRow(rowNum);
@@ -47,5 +50,15 @@ public class SampleExcelProvider extends ExcelProvider {
             dataRow.createCell(2).setCellValue(user.getEmail());
             rowNum++;
         }
+    }
+
+    private List<UserDto> getExcelData() {
+        return IntStream.range(0, 2000000).mapToObj(i ->
+                UserDto.builder()
+                        .id("아이디" + i)
+                        .name("이름" + i)
+                        .email("이메일" + i)
+                        .build()
+        ).collect(Collectors.toList());
     }
 }
