@@ -23,7 +23,6 @@ public class SampleExcelProvider extends ExcelProvider {
         List<List<UserDto>> partitionList = createPartition(userList);
         // 파티션 목록 마다 sheet 만듬
         int sheetNum = 0;
-        System.out.println("partitionList size = " + partitionList.size());
         for (List<UserDto> userDtos : partitionList) {
             Sheet sheet = workbook.createSheet("sheet" + sheetNum);
             // 헤더 생성
