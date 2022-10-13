@@ -21,6 +21,7 @@ public abstract class ExcelProvider {
     private static final String FILE_CONTENT_TYPE = MediaType.APPLICATION_OCTET_STREAM_VALUE;
     protected static final int MAX_ROW_SIZE = 1000000;
 
+    /** 엑셀다운로드 처리 로직 */
     @Timer
     public void excelDownload(HttpServletResponse response, final String fileName) {
         response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + fileName + FILE_EXTENSION);
@@ -35,12 +36,12 @@ public abstract class ExcelProvider {
             throw new RuntimeException("엑셀 파일 생성 중 에러가 발생하였습니다.");
         }
     }
-    protected abstract void createRow(SXSSFWorkbook workbook);
-
+    /** 다운받을 데이터를 100만으로 나눈다. */
     protected <T> List<List<T>> createPartition(List<T> collection) {
         return IntStream.rangeClosed(0, (collection.size() - 1) / MAX_ROW_SIZE)
                 .mapToObj(i -> collection.subList(i * MAX_ROW_SIZE,
                         Math.min((i + 1) * MAX_ROW_SIZE, collection.size())))
                 .collect(Collectors.toList());
     }
+    protected abstract void createRow(SXSSFWorkbook workbook);
 }
