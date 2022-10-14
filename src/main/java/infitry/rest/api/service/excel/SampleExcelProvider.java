@@ -57,7 +57,7 @@ public class SampleExcelProvider extends ExcelProvider {
 
     /** 엑셀 데이터 불러오기 */
     private List<UserDto> getExcelData() {
-        return IntStream.range(0, 2000000).mapToObj(i ->
+        return IntStream.range(0, 3000000).mapToObj(i ->
                 UserDto.builder()
                         .id("아이디" + i)
                         .name("이름" + i)
