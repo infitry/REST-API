@@ -28,4 +28,13 @@ public class Address {
     public static Address createAddress(AddressDto addressDto) {
         return new Address(addressDto);
     }
+
+    /** Entity To Dto */
+    public AddressDto toDto() {
+        return AddressDto.builder()
+                    .zipCode(this.zipCode)
+                    .address(this.address)
+                    .addressDetail(this.addressDetail)
+                .build();
+    }
 }

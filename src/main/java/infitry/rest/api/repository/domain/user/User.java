@@ -1,5 +1,6 @@
 package infitry.rest.api.repository.domain.user;
 
+import infitry.rest.api.dto.user.AddressDto;
 import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.repository.domain.common.BaseTimeEntity;
 import infitry.rest.api.repository.domain.embedded.Address;
@@ -15,6 +16,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Getter
@@ -64,6 +66,20 @@ public class User extends BaseTimeEntity implements UserDetails {
 
     public static User createUser(List<Authority> authorities, UserDto userDto) {
         return new User(authorities, userDto);
+    }
+
+    /** Entity to DTO */
+    public UserDto toDto() {
+        return UserDto.builder()
+                .userId(this.userId)
+                .id(this.id)
+                .password(this.password)
+                .name(this.name)
+                .phoneNumber(this.phoneNumber)
+                .email(this.email)
+                .authorities(this.authorities.stream().map(Authority::toDto).collect(Collectors.toList()))
+                .addressDto(Optional.ofNullable(this.address).map(Address::toDto).orElse(AddressDto.builder().build()))
+            .build();
     }
 
     @Override

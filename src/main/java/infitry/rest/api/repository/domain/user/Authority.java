@@ -1,5 +1,6 @@
 package infitry.rest.api.repository.domain.user;
 
+import infitry.rest.api.dto.user.AuthorityDto;
 import infitry.rest.api.repository.domain.common.BaseTimeEntity;
 import infitry.rest.api.repository.domain.user.code.Role;
 import lombok.AccessLevel;
@@ -31,5 +32,14 @@ public class Authority extends BaseTimeEntity {
 
     public static Authority createAuthority(Role role, String description) {
         return new Authority(role, description);
+    }
+
+    /** Entity to Dto */
+    public AuthorityDto toDto() {
+        return AuthorityDto.builder()
+                    .authorityId(this.authorityId)
+                    .role(this.role)
+                    .description(this.description)
+                .build();
     }
 }
