@@ -41,8 +41,13 @@ class TokenProviderTest {
 
     @Test
     public void 토큰발급_테스트() {
+        //given
+        UserDto userDto = ((User) authentication.getPrincipal()).toDto();
+
         //when
-        TokenDto tokenDto = tokenProvider.generateToken(authentication);
+        TokenDto tokenDto = tokenProvider.generateToken(userDto);
+
+        System.out.println("tokenDto = " + tokenDto);
 
         //then
         assertTrue(tokenProvider.isValidToken(tokenDto.getAccessToken()));

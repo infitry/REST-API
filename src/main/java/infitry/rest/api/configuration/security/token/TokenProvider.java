@@ -2,6 +2,8 @@ package infitry.rest.api.configuration.security.token;
 
 import infitry.rest.api.common.response.code.ResponseCode;
 import infitry.rest.api.dto.token.TokenDto;
+import infitry.rest.api.dto.user.AuthorityDto;
+import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.exception.ServiceException;
 import infitry.rest.api.repository.UserRepository;
 import infitry.rest.api.repository.domain.user.User;
@@ -35,21 +37,23 @@ public class TokenProvider {
     private final UserRepository userRepository;
 
     @Transactional
-    public TokenDto generateToken(Authentication authentication) {
+    public TokenDto generateToken(UserDto userDto) {
         String refreshToken = generateRefreshToken();
-        redisService.setValue(REDIS_GROUP_PREFIX + refreshToken, authentication.getName(), HOURS_REDIS_CACHE_EXPIRE, TimeUnit.HOURS);
+        redisService.setValue(REDIS_GROUP_PREFIX + refreshToken, userDto.getId(), HOURS_REDIS_CACHE_EXPIRE, TimeUnit.HOURS);
 
         return TokenDto.builder()
-                .accessToken(generateAccessToken(authentication))
+                .accessToken(generateAccessToken(userDto))
                 .refreshToken(refreshToken)
                 .build();
     }
-    public String generateAccessToken(Authentication authentication) {
-        User user = getUser(authentication);
+    public String generateAccessToken(UserDto userDto) {
 
         return Jwts.builder()
-                .setSubject(user.getId())
-                .claim(AUTHORITIES_KEY, getAuthorities(user))
+                .setSubject(userDto.getId())
+                .claim(AUTHORITIES_KEY, getAuthorities(userDto))
+                .claim("name", userDto.getName())
+                .claim("phoneNumber", userDto.getPhoneNumber())
+                .claim("email", userDto.getEmail())
                 .setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS512, SIGNING_KEY)
                 .setExpiration(DateUtil.addHours(HOURS_ACCESS_TOKEN_EXPIRE))
@@ -60,9 +64,9 @@ public class TokenProvider {
         return (User) authentication.getPrincipal();
     }
 
-    private String getAuthorities(User user) {
-        return user.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+    private String getAuthorities(UserDto userDto) {
+        return userDto.getAuthorities().stream()
+                .map(authorityDto -> authorityDto.getRole().name())
                 .collect(Collectors.joining(","));
     }
 
@@ -96,7 +100,7 @@ public class TokenProvider {
     }
 
     public String reissueAccessToken(String refreshToken) {
-        return generateAccessToken(getAuthentication(findUserById(getRedisValue(refreshToken))));
+        return generateAccessToken(findUserById(getRedisValue(refreshToken)).toDto());
     }
 
     private User findUserById(String userId) {

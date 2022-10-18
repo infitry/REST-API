@@ -45,8 +45,8 @@ public class UserService implements UserDetailsService {
     public TokenDto authentication(String userId, String password) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userId, password);
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-
-        return tokenProvider.generateToken(authentication);
+        UserDto userDto = ((User) authentication.getPrincipal()).toDto();
+        return tokenProvider.generateToken(userDto);
     }
 
     public String reissueAccessToken(String refreshToken) {

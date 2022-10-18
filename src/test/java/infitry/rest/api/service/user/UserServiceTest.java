@@ -1,5 +1,7 @@
 package infitry.rest.api.service.user;
 
+import infitry.rest.api.configuration.security.token.TokenProvider;
+import infitry.rest.api.dto.token.TokenDto;
 import infitry.rest.api.dto.user.AddressDto;
 import infitry.rest.api.dto.user.UserDto;
 import infitry.rest.api.repository.UserRepository;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional(readOnly = true)
@@ -28,6 +31,8 @@ class UserServiceTest {
     UserRepository userRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    TokenProvider tokenProvider;
 
     @Test
     @Transactional
@@ -52,13 +57,28 @@ class UserServiceTest {
         // given
         final String id = "test1";
         final String name = "회원1";
-        final String encodedPassword = passwordEncoder.encode("password");
+        final String password = "password";
         AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
         // when
-        userService.signUp(UserDto.builder().id(id).name(name).password(encodedPassword).addressDto(addressDto).build());
+        userService.signUp(UserDto.builder().id(id).name(name).password(password).addressDto(addressDto).build());
         User user = userRepository.findById(id).orElseThrow(NoSuchElementException::new);
         // then
         assertEquals(id, user.getId());
         assertEquals(name, user.getName());
+    }
+
+    @Test
+    @Transactional
+    public void 사용자_인증() {
+        final String id = "user1";
+        final String name = "회원1";
+        final String password = "password";
+        AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
+        // when
+        userService.signUp(UserDto.builder().id(id).name(name).password(password).addressDto(addressDto).build());
+        TokenDto tokenDto = userService.authentication(id, password);
+        // then
+        assertTrue(tokenProvider.isValidToken(tokenDto.getAccessToken()));
+        assertTrue(tokenProvider.isValidToken(tokenDto.getRefreshToken()));
     }
 }
