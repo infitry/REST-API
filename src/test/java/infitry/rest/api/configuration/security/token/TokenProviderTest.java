@@ -3,6 +3,8 @@ package infitry.rest.api.configuration.security.token;
 import infitry.rest.api.dto.token.TokenDto;
 import infitry.rest.api.dto.user.AddressDto;
 import infitry.rest.api.dto.user.UserDto;
+import infitry.rest.api.repository.AuthorityRepository;
+import infitry.rest.api.repository.UserRepository;
 import infitry.rest.api.repository.domain.user.Authority;
 import infitry.rest.api.repository.domain.user.User;
 import infitry.rest.api.repository.domain.user.code.Role;
@@ -21,12 +23,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class TokenProviderTest {
-
+    @Autowired
+    AuthorityRepository authorityrepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     TokenProvider tokenProvider;
     @Autowired
     PasswordEncoder passwordEncoder;
-
     Authentication authentication;
 
     @BeforeEach
@@ -34,9 +38,12 @@ class TokenProviderTest {
         // given
         final String encodedPassword = passwordEncoder.encode("password");
         Authority authority = Authority.createAuthority(Role.ROLE_ADMIN, "어드민 기능 허용");
+        authorityrepository.save(authority);
         Authority authority2 = Authority.createAuthority(Role.ROLE_USER, "사용자 기능 허용");
+        authorityrepository.save(authority2);
         AddressDto addressDto = AddressDto.builder().zipCode("111-111").address("서울시 마포구").addressDetail("성산동 111").build();
         User user = User.createUser(List.of(authority, authority2), UserDto.builder().id("user1").name("회원1").phoneNumber("01000000000").email("test@testtt.com").password(encodedPassword).addressDto(addressDto).build());
+        userRepository.save(user);
         authentication = new UsernamePasswordAuthenticationToken(user, encodedPassword, List.of(new SimpleGrantedAuthority(authority.getRole().name())));
     }
 
@@ -68,5 +75,16 @@ class TokenProviderTest {
         assertEquals(userDto.getName(), tokenUserDto.getName(), "기존 이름과 토큰 파싱 후 이름이 같아야 한다.");
         assertEquals(userDto.getPhoneNumber(), tokenUserDto.getPhoneNumber(), "기존 휴대전호번호와 토큰 파싱 후 휴대전호번호이 같아야 한다.");
         assertEquals(userDto.getEmail(), tokenUserDto.getEmail(), "기존 이메일과 토큰 파싱 후 이메일이 같아야 한다.");
+    }
+
+    @Test
+    public void 엑세스토큰_재발급() {
+        //given
+        UserDto userDto = ((User) authentication.getPrincipal()).toDto();
+        //when
+        TokenDto tokenDto = tokenProvider.generateToken(userDto);
+        String accessToken = tokenProvider.reissueAccessToken(tokenDto.getRefreshToken());
+        // then
+        assertTrue(tokenProvider.isValidToken(accessToken), "재발급 된 토큰은 유효한 토큰 이어야 한다.");
     }
 }

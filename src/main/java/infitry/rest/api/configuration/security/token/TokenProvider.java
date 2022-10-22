@@ -52,28 +52,7 @@ public class TokenProvider {
                 .refreshToken(refreshToken)
                 .build();
     }
-    /** 엑세스 토큰을 발급한다. */
-    public String generateAccessToken(UserDto userDto) {
-        return Jwts.builder()
-                .setSubject(userDto.getId())
-                .claim(UserConstant.AUTHORITIES_KEY, convertStringAuthorities(userDto))
-                .claim(UserConstant.NAME_KEY, userDto.getName())
-                .claim(UserConstant.PHONE_NUMBER_KEY, userDto.getPhoneNumber())
-                .claim(UserConstant.EMAIL_KEY, userDto.getEmail())
-                .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY)
-                .setExpiration(DateUtil.addHours(HOURS_ACCESS_TOKEN_EXPIRE))
-                .compact();
-    }
 
-    /** 리프레쉬 토큰을 발급한다. */
-    public String generateRefreshToken() {
-        return Jwts.builder()
-                .setIssuedAt(new Date())
-                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY)
-                .setExpiration(DateUtil.addHours(HOURS_REFRESH_TOKEN_EXPIRE))
-                .compact();
-    }
     /** 유효한 토큰인지 확인한다. */
     public boolean isValidToken(String token) {
         try {
@@ -106,8 +85,32 @@ public class TokenProvider {
         return generateAccessToken(findUserById(getRedisValue(refreshToken)).toDto());
     }
 
+    /** 엑세스 토큰을 발급한다. */
+    private String generateAccessToken(UserDto userDto) {
+        return Jwts.builder()
+                .setSubject(userDto.getId())
+                .claim(UserConstant.AUTHORITIES_KEY, convertStringAuthorities(userDto))
+                .claim(UserConstant.NAME_KEY, userDto.getName())
+                .claim(UserConstant.PHONE_NUMBER_KEY, userDto.getPhoneNumber())
+                .claim(UserConstant.EMAIL_KEY, userDto.getEmail())
+                .setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY)
+                .setExpiration(DateUtil.addHours(HOURS_ACCESS_TOKEN_EXPIRE))
+                .compact();
+    }
+
+    /** 리프레쉬 토큰을 발급한다. */
+    private String generateRefreshToken() {
+        return Jwts.builder()
+                .setIssuedAt(new Date())
+                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY)
+                .setExpiration(DateUtil.addHours(HOURS_REFRESH_TOKEN_EXPIRE))
+                .compact();
+    }
+
     /** 사용자 ID로 유저를 찾는다. */
     private User findUserById(String userId) {
+        log.info("user ID : {}", userId);
         return userRepository.findById(userId).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다.", ResponseCode.UNAUTHORIZED));
     }
 
