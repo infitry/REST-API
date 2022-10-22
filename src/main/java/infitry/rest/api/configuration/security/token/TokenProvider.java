@@ -66,12 +66,6 @@ public class TokenProvider {
                 .compact();
     }
 
-    /** 사용자의 권한들을 ","를 구분자로 String 으로 변환한다. */
-    private String convertStringAuthorities(UserDto userDto) {
-        return userDto.getAuthorities().stream()
-                .map(authorityDto -> authorityDto.getRole().name())
-                .collect(Collectors.joining(UserConstant.AUTHORITIES_SEPARATOR));
-    }
     /** 리프레쉬 토큰을 발급한다. */
     public String generateRefreshToken() {
         return Jwts.builder()
@@ -104,7 +98,7 @@ public class TokenProvider {
      **/
     @Timer
     public Authentication getAuthenticationByToken(String token) {
-        return getAuthentication(makeUserByClaims(parseClaims(token)));
+        return createAuthenticationByUserDto(createUserByClaims(parseClaims(token)));
     }
 
     /** 엑세스 토큰을 재발급 한다. */
@@ -117,19 +111,30 @@ public class TokenProvider {
         return userRepository.findById(userId).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다.", ResponseCode.UNAUTHORIZED));
     }
 
+    /** 사용자의 권한들을 ","를 구분자로 String 으로 변환한다. */
+    private String convertStringAuthorities(UserDto userDto) {
+        return userDto.getAuthorities().stream()
+                .map(authorityDto -> authorityDto.getRole().name())
+                .collect(Collectors.joining(UserConstant.AUTHORITIES_SEPARATOR));
+    }
+
+    /** Redis Key 값으로 값을 가져온다. */
     private String getRedisValue(String key) {
         return redisService.getValue(REDIS_GROUP_PREFIX + key, String.class);
     }
 
-    private Authentication getAuthentication(UserDto userDto) {
+    /** UserDto로 Authentication 생성 */
+    private Authentication createAuthenticationByUserDto(UserDto userDto) {
         return new UsernamePasswordAuthenticationToken(userDto, null, convertAuthorityDtosToSecurityAuthorities(userDto.getAuthorities()));
     }
 
+    /** Authority Dto list로 Security Authority를 만든다. */
     private static List<GrantedAuthority> convertAuthorityDtosToSecurityAuthorities(List<AuthorityDto> authorityDtos) {
         return authorityDtos.stream().map(authorityDto -> new SimpleGrantedAuthority(authorityDto.getRole().name())).collect(Collectors.toList());
     }
 
-    private UserDto makeUserByClaims(Claims claims) {
+    /** JWT의 Claims로 UserDto를 생성한다 */
+    private UserDto createUserByClaims(Claims claims) {
         return UserDto.builder()
                 .id(claims.getSubject())
                 .name(claims.get(UserConstant.NAME_KEY, String.class))
@@ -139,11 +144,13 @@ public class TokenProvider {
             .build();
     }
 
+    /** Claims의 String Authority를 Authority Dto List로 변환한다. */
     private List<AuthorityDto> convertStringAuthoritiesToAuthorityDtos(Claims claims) {
        return Arrays.stream(claims.get(UserConstant.AUTHORITIES_KEY, String.class).split(UserConstant.AUTHORITIES_SEPARATOR))
                .map(authority -> AuthorityDto.builder().role(Role.valueOf(authority)).build()).collect(Collectors.toList());
     }
 
+    /** JWT에서 Claims를 추출한다. */
     private Claims parseClaims(String token) {
         return Jwts.parser()
                 .setSigningKey(SIGNING_KEY)
