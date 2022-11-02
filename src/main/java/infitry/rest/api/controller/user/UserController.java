@@ -31,7 +31,7 @@ public class UserController {
     private final UserService userService;
     private final ObjectMapper objectMapper;
 
-    @PostMapping
+    @PostMapping("/new")
     @Operation(summary = "회원 가입", description = "회원가입 처리")
     public CommonResponse signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
         UserDto userDto = objectMapper.convertValue(signUpRequest, UserDto.class);
