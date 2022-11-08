@@ -1,10 +1,8 @@
 package infitry.rest.api.configuration.security;
 
 import infitry.rest.api.common.constant.SecurityConstant;
-import infitry.rest.api.common.constant.UserConstant;
 import infitry.rest.api.configuration.security.token.TokenFilter;
 import infitry.rest.api.configuration.security.token.TokenProvider;
-import infitry.rest.api.repository.domain.user.code.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
