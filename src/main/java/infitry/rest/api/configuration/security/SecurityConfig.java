@@ -46,6 +46,7 @@ public class SecurityConfig {
             .and()
                 .authorizeRequests()
                 .antMatchers("/").anonymous()
+                .antMatchers("/users/new").anonymous()
                 .antMatchers("/users/**").permitAll()
                 .antMatchers("/files/**").hasRole(SecurityConstant.ROLE_USER)
                 .antMatchers("/sample/excel/**").permitAll()
